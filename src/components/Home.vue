@@ -39,7 +39,6 @@
         </v-layout>
         <v-layout row wrap id="result">
             <v-flex xs12>
-               
             </v-flex>
         </v-layout>
     </v-container>
@@ -67,21 +66,46 @@ export default {
             this.db = window.sqlitePlugin.openDatabase({
                 name: 'pkarea',
                 location: 'default',
-                androidDatabaseImplementation: 2 //Workaround pour eviter la corruption si ouverture de plusieurs instances
-            });
-
-            this.loadPks();
+                androidDatabaseImplementation: 2, //Workaround pour eviter la corruption si ouverture de plusieurs instances
+                createFromLocation: 1
+            },  this.loadPks);
         },
         loadPks(){
-            console.log(this.db);
-            this.db.executeSql('SELECT* FROM pks', [], function(rs) {
-                console.log(rs.rows);
-            }, function(error) {
-                console.log('error'+error.message);
-            });
+                this.db.executeSql('CREATE TABLE IF NOT EXISTS pks (id unique, pk_debut, pk_fin, pk_autoroute, pk_voie, pk_sens, pk_type, pk_debut_zone, pk_fin_zone)');
+                // this.db.executeSql('INSERT INTO pks VALUES (?,?,?,?,?,?,?,?,?)', [1,115.6,121,'a41','lente','sud','FLR',116,122.1], function(err){
+                //     console.log(err);
+                // })
+                // this.db.executeSql('INSERT INTO pks VALUES (?,?,?,?,?,?,?,?,?)', [2,121.9,122.9,'a41','lente','sud','FLR',122.1,124.8], function(err){
+                //     console.log(err);
+                // })
+
+                this.db.executeSql('SELECT * FROM pks', [], (rs) => {
+                    console.log(rs);
+                    console.log(rs.rows.length);
+                    if(!rs.rows.length){
+                        this.promptLoadFromFile();
+                    }else {
+                        for(let i = 0; i<rs.rows.length; i++){
+                            console.log(rs.rows.item(i), i);
+                            this.allPks.push(rs.rows.item(i));
+                        }
+
+                    console.log(this.allPks);
+                    }
+                }, (error) => {
+                    this.db.executeSql('CREATE TABLE IF NOT EXISTS pks (id unique, pk_debut, pk_fin, pk_autoroute, pk_voie, pk_sens, pk_type, pk_debut_zone, pk_fin_zone)');                
+                    console.log(error);
+                });
+
             this.allPks = [];
         },
-        loadPksFromFile(){
+        initDb(){
+
+        },
+        promptLoadFromFile(){
+
+        },
+        loadPksFromFile(file){
             this.allPks = [];
         },
         search(){
