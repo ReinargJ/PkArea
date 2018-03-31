@@ -39,16 +39,30 @@
         </v-layout>
         <v-layout row wrap id="result">
             <v-flex xs12>
+                <pk-table :pks="allPks"></pk-table>
             </v-flex>
         </v-layout>
     </v-container>
 </template>
 <script>
+import PkTable from './PkTable';
+
 export default {
     name: 'Home',
+
     data() {
         return {
-            allPks: [],
+            allPks: [{
+                id: 1 , 
+                pk_debut: 115.6, 
+                pk_fin: 121, 
+                pk_autoroute:'a41', 
+                pk_voie: 'lente', 
+                pk_sens: 'sud', 
+                pk_type: 'FLR', 
+                pk_debut_zone: 116, 
+                pk_fin_zone: 122.1
+            }],
             paramAutoroute: 'A410',
             paramSens: 'Nord',
             paramVoie: 'Lente',
@@ -97,7 +111,7 @@ export default {
                     console.log(error);
                 });
 
-            this.allPks = [];
+            
         },
         initDb(){
 
@@ -106,7 +120,7 @@ export default {
 
         },
         loadPksFromFile(file){
-            this.allPks = [];
+            
         },
         search(){
             
@@ -118,6 +132,10 @@ export default {
 
     mounted() {
         document.addEventListener('deviceready', this.openDb);
+    },
+
+    components: {
+        PkTable
     }
 }
 
