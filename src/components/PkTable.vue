@@ -2,7 +2,6 @@
     <v-data-table
       :headers="headers"
       :items="pks"
-      :search="search"
       :rows-per-page-items="[15,20,50,{'text':'All','value':-1}]"
     >
       <template slot="items" slot-scope="props">

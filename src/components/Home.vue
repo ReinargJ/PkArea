@@ -6,6 +6,7 @@
                 name="input-pk"
                 label="Chercher un pk"
                 type="number"
+                v-model="paramPk"
                 ></v-text-field>
             </v-flex>
             <v-flex xs12>
@@ -39,7 +40,7 @@
         </v-layout>
         <v-layout row wrap id="result">
             <v-flex xs12>
-                <pk-table :pks="allPks"></pk-table>
+                <pk-table v-if="show" :pks="selectedPks"></pk-table>
             </v-flex>
         </v-layout>
     </v-container>
@@ -52,7 +53,52 @@ export default {
 
     data() {
         return {
-            allPks: [{
+            allPks: [
+                {
+                id: 1 , 
+                pk_debut: 130.6, 
+                pk_fin: 127, 
+                pk_autoroute:'a41', 
+                pk_voie: 'lente', 
+                pk_sens: 'sud', 
+                pk_type: 'FLR', 
+                pk_debut_zone: 116, 
+                pk_fin_zone: 122.1
+            },
+            {
+                id: 1 , 
+                pk_debut: 115.6, 
+                pk_fin: 121, 
+                pk_autoroute:'a410', 
+                pk_voie: 'lente', 
+                pk_sens: 'sud', 
+                pk_type: 'FLR', 
+                pk_debut_zone: 116, 
+                pk_fin_zone: 122.1
+            },
+            {
+                id: 1 , 
+                pk_debut: 115.6, 
+                pk_fin: 121, 
+                pk_autoroute:'a410', 
+                pk_voie: 'lente', 
+                pk_sens: 'sud', 
+                pk_type: 'Bassin', 
+                pk_debut_zone: 116, 
+                pk_fin_zone: 122.1
+            },
+            {
+                id: 1 , 
+                pk_debut: 115.6, 
+                pk_fin: 121, 
+                pk_autoroute:'adelac', 
+                pk_voie: 'lente', 
+                pk_sens: 'sud', 
+                pk_type: 'FLR', 
+                pk_debut_zone: 116, 
+                pk_fin_zone: 122.1
+            },
+            {
                 id: 1 , 
                 pk_debut: 115.6, 
                 pk_fin: 121, 
@@ -62,15 +108,62 @@ export default {
                 pk_type: 'FLR', 
                 pk_debut_zone: 116, 
                 pk_fin_zone: 122.1
-            }],
-            paramAutoroute: 'A410',
-            paramSens: 'Nord',
-            paramVoie: 'Lente',
+            },
+            {
+                id: 1 , 
+                pk_debut: 115.6, 
+                pk_fin: 121, 
+                pk_autoroute:'a41', 
+                pk_voie: 'lente', 
+                pk_sens: 'sud', 
+                pk_type: 'FLR', 
+                pk_debut_zone: 116, 
+                pk_fin_zone: 122.1
+            },
+            {
+                id: 1 , 
+                pk_debut: 115.6, 
+                pk_fin: 121, 
+                pk_autoroute:'a41', 
+                pk_voie: 'lente', 
+                pk_sens: 'sud', 
+                pk_type: 'FLR', 
+                pk_debut_zone: 116, 
+                pk_fin_zone: 122.1
+            },
+            {
+                id: 1 , 
+                pk_debut: 115.6, 
+                pk_fin: 121, 
+                pk_autoroute:'a41', 
+                pk_voie: 'lente', 
+                pk_sens: 'sud', 
+                pk_type: 'FLR', 
+                pk_debut_zone: 116, 
+                pk_fin_zone: 122.1
+            },
+            {
+                id: 1 , 
+                pk_debut: 115.6, 
+                pk_fin: 121, 
+                pk_autoroute:'a41', 
+                pk_voie: 'lente', 
+                pk_sens: 'sud', 
+                pk_type: 'FLR', 
+                pk_debut_zone: 116, 
+                pk_fin_zone: 122.1
+            }
+            ],
+            selectedPks:[],
+            show: false,
+            paramPk: '',
+            paramAutoroute: 'a410',
+            paramSens: 'nord',
+            paramVoie: 'lente',
 
-            autoroutes: ['A410','ADELAC','A41'],
-            voies: ['Lente', 'Rapide'],
-            sens: ['Nord', 'Sud'],
-            test: "1;115,6;121;a41;lente;sud;FLR;116;122,1\n2;121,9;122,9;a41;lente;sud;FLR;122,1;124,8\n3;124,6;126,8;a41;lente;sud;FLR;124,8;127,7",
+            autoroutes: [{text:'A410', value: 'a410'},{text: 'ADELAC', value: 'adelac'},{text: 'A41', value: 'a41'}],
+            voies: [{text:'Lente', value: 'lente'}, {text: 'Rapide', value: 'rapide'}],
+            sens: [{text:'Nord', value: 'nord'}, {text:'Sud', value: 'sud'}],
             db: null
         }
     },
@@ -94,17 +187,12 @@ export default {
                 // })
 
                 this.db.executeSql('SELECT * FROM pks', [], (rs) => {
-                    console.log(rs);
-                    console.log(rs.rows.length);
                     if(!rs.rows.length){
                         this.promptLoadFromFile();
                     }else {
                         for(let i = 0; i<rs.rows.length; i++){
-                            console.log(rs.rows.item(i), i);
                             this.allPks.push(rs.rows.item(i));
                         }
-
-                    console.log(this.allPks);
                     }
                 }, (error) => {
                     this.db.executeSql('CREATE TABLE IF NOT EXISTS pks (id unique, pk_debut, pk_fin, pk_autoroute, pk_voie, pk_sens, pk_type, pk_debut_zone, pk_fin_zone)');                
@@ -123,10 +211,28 @@ export default {
             
         },
         search(){
-            
+            let test =  this.allPks.filter( (pk) => {
+                console.log(pk);
+                if(this.paramVoie == pk.pk_voie && this.paramAutoroute == pk.pk_autoroute && this.paramSens == pk.pk_sens){
+                    if(this.paramSens == 'nord'){
+                        if(this.paramPk<pk.pk_debut_zone && this.paramPk>pk.pk_fin_zone){
+                            return pk
+                        }
+                    } else {
+                        if(this.paramPk>pk.pk_debut_zone && this.paramPk<pk.pk_fin_zone){
+                            return pk
+                        }
+                    }
+                }
+            })
+
+            console.log(test);
+            this.selectedPks = test 
+            this.show = true;
         },
         showAll(){
-
+            this.selectedPks = this.allPks;
+            this.show = true;
         },
     },
 
