@@ -34,17 +34,40 @@
                 ></v-select>
             </v-flex>
 
-            <v-btn @click="search">Rechercher</v-btn>
-            <v-btn @click="showAll">Tout afficher</v-btn>
+            <v-btn @click="handleSearchClick">Rechercher</v-btn>
+            <v-btn @click="handleShowAllClick">Tout afficher</v-btn>
             
         </v-layout>
         <v-layout row wrap id="result">
             <v-flex xs12>
                 <pk-table v-if="show" :pks="selectedPks"></pk-table>
+                <v-tabs
+                    v-if="showAll"
+                    v-model="active"
+                    color="cyan"
+                    dark
+                    slider-color="yellow"
+                    >
+                    <v-tab
+                        v-for="(a, index) in autoroutes"
+                        :key="index"
+                        ripple
+                    >
+                        {{ a.text }}
+                    </v-tab>
+                
+                    <v-tab-item
+                        v-for="(n, index) in autoroutes"
+                        :key="index"
+                    >
+                        <pk-table :pks="filteredPks[n.value]"></pk-table>
+                    </v-tab-item>
+                </v-tabs>
             </v-flex>
         </v-layout>
     </v-container>
 </template>
+
 <script>
 import PkTable from './PkTable';
 
@@ -154,8 +177,12 @@ export default {
                 pk_fin_zone: 122.1
             }
             ],
+            filteredPks:{
+            },
+            active: null,
             selectedPks:[],
             show: false,
+            showAll: false,
             paramPk: '',
             paramAutoroute: 'a410',
             paramSens: 'nord',
@@ -168,7 +195,12 @@ export default {
         }
     },
 
+    watch: {
+        'allPks': this.filterAllPks
+    },
+
     methods: {
+        // DATABASE METHODS
         openDb(){
             this.db = window.sqlitePlugin.openDatabase({
                 name: 'pkarea',
@@ -204,15 +236,18 @@ export default {
         initDb(){
 
         },
+
+        // FILE HANDLERS
         promptLoadFromFile(){
 
         },
         loadPksFromFile(file){
             
         },
-        search(){
-            let test =  this.allPks.filter( (pk) => {
-                console.log(pk);
+
+        //EVENT HANDLERS 
+        handleSearchClick(){
+            this.selectedPks = this.allPks.filter( (pk) => {
                 if(this.paramVoie == pk.pk_voie && this.paramAutoroute == pk.pk_autoroute && this.paramSens == pk.pk_sens){
                     if(this.paramSens == 'nord'){
                         if(this.paramPk<pk.pk_debut_zone && this.paramPk>pk.pk_fin_zone){
@@ -224,20 +259,35 @@ export default {
                         }
                     }
                 }
-            })
+            }) 
+            this.show = true;
+            this.showAll = false;
+        },
+        handleShowAllClick(){
+            this.show = false;
+            this.showAll = true;
+        },
 
-            console.log(test);
-            this.selectedPks = test 
-            this.show = true;
-        },
-        showAll(){
-            this.selectedPks = this.allPks;
-            this.show = true;
-        },
+        // FILTERS
+        filterAllPks(){
+            this.autoroutes.forEach(autoroute =>{
+                console.log(autoroute);
+                this.filteredPks[autoroute.value] = [];
+            });
+
+            this.allPks.forEach( pk => {
+                this.filteredPks[pk.pk_autoroute].push(pk);
+            })
+        }
     },
 
     mounted() {
+        
         document.addEventListener('deviceready', this.openDb);
+    },
+
+    created(){
+        this.filterAllPks(); // DEV
     },
 
     components: {
