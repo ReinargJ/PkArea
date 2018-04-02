@@ -2,7 +2,7 @@
     <v-navigation-drawer fixed v-model="mutatedDrawer" app>
         <v-list subheader>
             <v-subheader inset>Pk Area</v-subheader>
-            <v-list-tile @click="updatePks">
+            <v-list-tile @click="handleRefreshClick">
                 <v-list-tile-action>
                     <v-icon>refresh</v-icon>
                 </v-list-tile-action>
@@ -15,10 +15,12 @@
 </template>
 
 <script>
+import {mapAction} from 'vuex'
+
 export default {
     data() {
         return {
-
+            db: null
         }
     },
 
@@ -42,8 +44,11 @@ export default {
     },
 
     methods: {
-        updatePks(){
-
+        refreshFromUrl(){
+            this.$store.dispatch('refreshFromUrl');
+        },
+        handleRefreshClick(){
+            this.refreshFromUrl('http://localhost:3030/pkarea');
         }
     }
 }
