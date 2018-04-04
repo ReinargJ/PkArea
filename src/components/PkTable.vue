@@ -6,7 +6,7 @@
     >
       <template slot="items" slot-scope="props">
         <td>{{ props.item.pk_debut }}</td>
-        <td >{{ props.item.pk_fin }}</td>
+        <td >{{ (props.item.pk_fin?props.item.pk_fin:props.item.pk_debut) }}</td>
         <td >{{ props.item.pk_type }}</td>
       </template>
       <v-alert slot="no-results" :value="true" color="error" icon="warning">

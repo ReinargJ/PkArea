@@ -103,7 +103,7 @@ export default {
         // FILTERS
         filterAllPks() {
             this.autoroutes.forEach(autoroute => {
-                this.filteredPks[autoroute.value] = [];
+                this.$set(this.filteredPks,autoroute.value, []);
             });
 
             this.allPks.forEach(pk => {

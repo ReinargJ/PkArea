@@ -16,8 +16,7 @@ const mutations = {
 
 const actions = {
     refreshFromUrl ({commit}, url) {
-        let pks = loadFromUrl('http://localhost:3030/pkarea', (pks) => {
-            console.log(pks, commit);
+        let pks = loadFromUrl('http://54.38.241.19/pkarea', (pks) => {
             commit('setPks', pks);
 
             let db = openDb('pkarea', 'default');
