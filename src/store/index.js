@@ -5,7 +5,7 @@ import {openDb, resetDb, loadFromUrl, loadFromDb} from '../methods'
 Vue.use(Vuex)
 
 const state = {
-  allPks: []
+  allPks: [],
 }
 
 const mutations = {

@@ -1,8 +1,10 @@
 <template>
+
     <v-data-table
       :headers="headers"
       :items="pks"
       :rows-per-page-items="[15,20,50,{'text':'All','value':-1}]"
+      :search="search"
     >
       <template slot="items" slot-scope="props">
         <td>{{ props.item.pk_debut }}</td>
@@ -10,7 +12,7 @@
         <td >{{ props.item.pk_type }}</td>
       </template>
       <v-alert slot="no-results" :value="true" color="error" icon="warning">
-        Aucun pk trouvé"{{ search }}" found no results.
+        Aucun pk trouvé pour "{{ search }}".
       </v-alert>
       <template slot="no-data">
         Aucun pk a afficher
@@ -24,13 +26,16 @@ export default {
     props: {
         pks: {
             type: Array,
+            default: () =>[]
+        },
+        search: {
+            type: String,
             required: true
         }
     },
 
     data() {
         return {
-            search: '',
             headers: [
                 { text: 'Pk de debut', value: 'pk_debut' },
                 { text: 'Pk de fin', value: 'pk_fin' },

@@ -46,6 +46,7 @@ export default {
     methods: {
         refreshFromUrl(){
             this.$store.dispatch('refreshFromUrl');
+            this.mutatedDrawer = false;
         },
         handleRefreshClick(){
             this.refreshFromUrl('http://localhost:3030/pkarea');
