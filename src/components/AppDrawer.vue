@@ -10,14 +10,6 @@
                     <v-list-tile-title>Mettre à jour les pks</v-list-tile-title>
                 </v-list-tile-content>
             </v-list-tile>
-            <v-list-tile @click="handleDebugClick">
-                <v-list-tile-action>
-                    <v-icon>refresh</v-icon>
-                </v-list-tile-action>
-                <v-list-tile-content>
-                    <v-list-tile-title>Debug</v-list-tile-title>
-                </v-list-tile-content>
-            </v-list-tile>
         </v-list>
     </v-navigation-drawer>
 </template>
@@ -59,14 +51,6 @@ export default {
         },
         handleRefreshClick(){
             this.refreshFromUrl('http://localhost:3030/pkarea');
-        },
-        handleDebugClick(){
-            
-             let db = window.sqlitePlugin.openDatabase({
-                name: 'pkarea',
-                iosDatabaseLocation: 'Library'
-                //androidDatabaseImplementation: 2, //Workaround pour eviter la corruption si ouverture de plusieurs instances
-            });
         }
     }
 }
