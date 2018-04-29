@@ -1,38 +1,49 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import {openDb, resetDb, loadFromUrl, loadFromDb} from '../methods'
+import {openSqliteDb, resetDb, loadFromUrl, loadFromDb} from '../methods'
 
 Vue.use(Vuex)
 
 const state = {
   allPks: [],
+  db: null
 }
 
 const mutations = {
   setPks (state, pks){
       state.allPks = pks;
+  },
+  setDb(state, db){
+      state.db = db
   }
 }
 
 const actions = {
-    refreshFromUrl ({commit}, url) {
-        let pks = loadFromUrl('http://54.38.241.19/pkarea', (pks) => {
+    refreshFromUrl ({commit, state}) {
+        let pks = loadFromUrl('http://jgranier.fr/pkarea', (pks) => {
             commit('setPks', pks);
 
-            let db = openDb('pkarea', 'default');
-            resetDb(db, pks);
-            
-            db.close();
+            resetDb(state.db, pks);
         })
     },
-    loadFromDb ({commit}) {
-        let db = openDb('pkarea', 'default');
-        
-        let pks = loadFromDb(db);
-        db.close(); 
+    loadFromDb ({commit, state}) {
+        let pks = loadFromDb(state.db,(pks) => {
+            console.log(pks);
+            commit('setPks', pks)
+        });
 
-        commit('setPks', pks)
+        
     },
+    openDb( {commit, dispatch}, sqlite){
+        console.log(sqlite);
+        let db = sqlite.openDatabase({
+            name: 'pkarea',
+            iosDatabaseLocation: 'Library'
+            //androidDatabaseImplementation: 2, //Workaround pour eviter la corruption si ouverture de plusieurs instances
+        });
+        commit('setDb', db);
+        dispatch('loadFromDb');
+    }
 }
 
 const getters = {

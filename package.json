@@ -1,11 +1,12 @@
 {
-  "name": "com.phonegap.helloworld",
+  "name": "fr.jgranier.pkarea",
   "version": "1.0.0",
-  "description": "Brand new cordova project with Vuetify.js - webpack!",
+  "description": "Application PkArea",
   "scripts": {
-    "default": "echo \"There is no scripts you can run with npm run command.\" && exit 1",
+    "default": "cordova run browser -- --lr",
+    "android": "cordova run android --device",
     "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
-    "start": "npm run dev",
+    "start": "npm run default",
     "build": "node build/build.js"
   },
   "keywords": [
@@ -84,7 +85,7 @@
     "last 2 versions",
     "not ie <= 8"
   ],
-  "displayName": "helloworld",
+  "displayName": "PkArea",
   "cordova": {
     "plugins": {
       "cordova-plugin-whitelist": {},
