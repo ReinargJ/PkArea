@@ -26,6 +26,12 @@ export default {
 
     components: {
         AppDrawer
+    },
+
+    created(){
+        //console.log(window.sqlitePlugin);
+       
+        
     }
 }
 

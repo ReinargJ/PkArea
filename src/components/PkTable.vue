@@ -37,8 +37,8 @@ export default {
     data() {
         return {
             headers: [
-                { text: 'Pk de debut', value: 'pk_debut' },
-                { text: 'Pk de fin', value: 'pk_fin' },
+                { text: 'Début', value: 'pk_debut' },
+                { text: 'Fin', value: 'pk_fin' },
                 { text: 'Type', value: 'pk_type' },
             ],
         }
@@ -54,3 +54,9 @@ export default {
 }
 
 </script>
+
+<style>
+    table {
+        word-break: break-all;
+    }
+</style>

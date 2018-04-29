@@ -45,7 +45,8 @@ export default {
 
     methods: {
         refreshFromUrl(){
-            this.$store.dispatch('refreshFromUrl');
+            console.log(window.sqlitePlugin);
+            this.$store.dispatch('refreshFromUrl', window.sqlitePlugin);
             this.mutatedDrawer = false;
         },
         handleRefreshClick(){

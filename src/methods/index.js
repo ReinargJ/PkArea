@@ -1,9 +1,10 @@
-const openDb = (name, location) =>{
-    return window.sqlitePlugin.openDatabase({
+const openSqliteDb = (name, location,sqlite) =>{
+    console.log(sqlite);
+
+    return sqlite.openDatabase({
         name: name,
         location: location,
         androidDatabaseImplementation: 2, //Workaround pour eviter la corruption si ouverture de plusieurs instances
-        createFromLocation: 1
     });
 }
 
@@ -38,7 +39,7 @@ const resetDb = (db, pks) => {
     })
 }
 
-const loadFromDb = (db) => {
+const loadFromDb = (db, storeCallback) => {
     db.executeSql('SELECT * FROM pks', [], (rs) => {
         let allPks = []
         if (rs.rows.length) {
@@ -46,7 +47,8 @@ const loadFromDb = (db) => {
                 allPks.push(rs.rows.item(i));
             }
         }
-        return allPks;
+
+        storeCallback(allPks)
     }, (error) => {
         db.executeSql('CREATE TABLE IF NOT EXISTS pks (id unique, pk_debut, pk_fin, pk_autoroute, pk_voie, pk_sens, pk_type, pk_debut_zone, pk_fin_zone)');
         return []

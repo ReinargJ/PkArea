@@ -40,7 +40,6 @@
 
 <script>
 import PkTable from "./PkTable";
-import { mapActions, mapGetters } from "vuex";
 
 export default {
   name: "Home",
@@ -126,13 +125,18 @@ export default {
       });
 
       this.allPks.forEach(pk => {
-        this.filteredPks[pk.pk_autoroute].push(pk);
+        if(pk.pk_voie == "lente" ){
+            this.filteredPks[pk.pk_autoroute].push(pk);
+        }
       });
     }
   },
 
   mounted() {
-    this.loadFromDb();
+      document.addEventListener('deviceready', () => {
+          this.$store.dispatch("openDb", window.sqlitePlugin);
+          //this.loadFromDb()
+      })
   },
 
   components: {
